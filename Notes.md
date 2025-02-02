@@ -154,8 +154,24 @@ func fibonacci() func() int {
 	}
 }
 ```
+- Creating methods for the structs. Go doesn't have classes but you can attach methods to the structs. When you do so you add a `receiver` to the method. which is basically reference to the struct this method being called upon. 
+- You add a `receiver` to the method by add it as a param after `func` keyword and before method's name and params. for example. `func (v Vertex) Abs() float64` is a method with a `receiver` of type `Vertex` and it takes not arg and returns a `float`.
+- inside the method. you can access the `struct` which is calling this method using `v`
+- like this `v := Vertex{3, 4} and v.Abs()`
+- Methods are just functions with a receiver. you could write a function like `func Abs(v Vertex) float64` but then you would do `Abs(v)` not `v.Abs()`
+- You can declare a method on non-struct types, too. for example for a `float`. Notice that we first define a type of float and then we define a method on it. 
+```
+type MyFloat float64
 
+func (f MyFloat) Abs() float64 {
+	if f < 0 {
+		return float64(-f)
+	}
+	return float64(f)
+}
 
+```
+-  
 
 
 
