@@ -89,9 +89,71 @@ func main() {
 		[]string{"_", "_", "_"},
 		[]string{"_", "_", "_"},
 	}
+
+    //  upper way is static definition. make can help us to define it in a dynamic way. 
+	picSlice := make([][]uint8, dy)
+	for y := 0; y < dy; y++ {
+		picSlice[y] = make([]uint8, dx)
+	}
+
 ```
 - you can append to a slice. appends at the end? yes. `s = append(s, 2, 3, 4)` REF: https://go.dev/blog/slices-intro
+- bigger array is allocated if backing array is small to acomodate all the elements being appended. 
+- Iterating over slice is possible using `range` function which can be used like ` range mySlice` which basically returns two value. it returns `index` and `value` which is the copy of the element at that index. 
+- `for i, _ := range pow` or `for _, value := range pow` to avoid the variable if they are not required. `for i := range pow` will only capture the first variable which is the index here. 
+- cannot give variable to slice length. or array length. 
+- Map in GO. you define the key and value type like `map[keyType]ValueType`. the not initialized value/ zero value of a map is nil. you cannot put a key in it. you need to initialize it using `make` function. `m = make(map[string]Vertex)`
+- or you define and initialize like `map[string]string{ "key": "value"}` or if its a struct as value you could do it like this `map[string]myStruct{ "key": {1, "fieldOfMyStruct"} }` where our `struct` takes two fields of type int and string. 
+- Map operations: write `m[key] = elem`, read `elem = m[key]`, delete `delete(m, key)` reading with two value assignment `elem, ok := m[key]`
+- word count in go 
+```
 
+func WordCount(s string) map[string]int {
+	ans := make(map[string]int)
+	words := strings.Fields(s)
+	for _, word := range words{
+		v, ok := ans[word]
+		if ok {
+			ans[word] =  1 + v
+		} else{
+			ans[word] = 1
+		}
+	}
+	return ans
+}
+
+```
+- Functions are values too. They can be passed around just like other values.
+- defining a function value ` fn func(float64, float64) float64`. defines a function which takes two float args and return one float. 
+- following defines a function which takes a function which takes two `float` args and return a `float`  
+```
+func compute(fn func(float64, float64) float64) float64 {
+	return fn(3, 4)
+}
+
+```
+- Go has closures. Closure is a function which access a variable from outside of its body. 
+```
+func adder() func(int) int {
+	sum := 0
+	return func(x int) int {
+		sum += x
+		return sum
+	}
+}
+```
+- fibonacci in go using closures 
+```
+func fibonacci() func() int {
+	first, second := 0, 1
+	return func () int{
+		ans := first 
+		first = second 
+		second = first + ans
+		return ans			
+	}
+}
+```
 
 
 
