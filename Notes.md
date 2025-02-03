@@ -174,6 +174,9 @@ func (f MyFloat) Abs() float64 {
 - Pointer receivers. You define the pointer receiver when you want to mutate the receiver inside your method. 
 - this is because the method operates on the copy of he receiver. So actually change the receiver you should operate on a pointer to the receiver type. 
 - method and functions which take pointers. when you create a function which takes a pointer argument you always need to pass pointer to the method call. But when you create a method with pointer receiver. You will call the method on the type's value the receiver pointers gets injected into the method call automatically. for example for `func (v *Vertex) Scale(f float64)`, `v.Scale(5)` is same as `(&v).Scale(5)` and we don't need to do it. Go handles it
+- this is supported in reverse as well. if method takes a value, even then we can call method using pointer to the value of the same type for which method receiver is defined. 
+- Using a pointer receiver is better because we can modify the actual value not the copy and it avoids creation of copy so less memory in case we are dealing with large structs. 
+- ALL THE METHOD OF A GIVEN TYPE MUST BE EITHER POINTER RECEIVER OR VALUE NOT MIX. 
 
 
 
