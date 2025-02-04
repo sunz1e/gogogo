@@ -177,8 +177,16 @@ func (f MyFloat) Abs() float64 {
 - this is supported in reverse as well. if method takes a value, even then we can call method using pointer to the value of the same type for which method receiver is defined. 
 - Using a pointer receiver is better because we can modify the actual value not the copy and it avoids creation of copy so less memory in case we are dealing with large structs. 
 - ALL THE METHOD OF A GIVEN TYPE MUST BE EITHER POINTER RECEIVER OR VALUE NOT MIX. 
+- `type` keyword in go. `type` keyword creates a new type. Creating a type definition basically. you use it like `type nameOfMyType andStructureOfThisType`. You give name of the type and the underlying structure you want your type to have. Now, Your type can have anything as underlying structure. For example when you do `type MyFloat float64` you are basically keeping `float64` as the underlying structure. 
+- When you define a struct you basically define a custom type with struct as the underlying structure. 
+```
+type Vertex struct {
+  X int
+  Y int
+}
 
-
+```
+- 
 
 
 
