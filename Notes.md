@@ -219,7 +219,7 @@ func (f MyFloat) method2() float64 {
 var a myInterface
 a = MyFloat(1.4444)
 ``` 
-- you are basically linking a reference of type myInterface to the actual implementations. So if you switch the type on right hand side you will switch the implementations as well. 
+- you are basically linking a reference of type myInterface to the actual implementations. So if you switch the type on right hand side you will switch the implementations as well. this is called implicit intent in go where the type implementing the interface doesn't explicitly say that hey I am implementing this interface. 
 - IF YOUR CUSTOM TYPE DOESN'T IMPLEMENT ALL THE METHODS DEFINED IN INTERFACE YOU WILL GET ERROR DURING THIS ASSIGNMENT WHICH IS ACTUALLY LINKING THE INTERFACE AND THE IMPLEMENTATIONS. 
 - Linking assignment does a hard check on receiver. So if the required method implementation has pointer receiver but you are trying to link a value type to the `interface` var. you will get error. 
 ```GO
@@ -253,10 +253,34 @@ type myInterface interface {
 // this works 
 a = &c
 ```
+- interface values. interfaces values have two parts to it. actual value and the type. we can use `describe` method defined below. it prints the actual value and the type tuple. 
 
+```Go
 
+type I interface {
+	M()
+}
 
+type T struct {
+	S string
+	t string
+}
 
+func (t *T) M() {
+	fmt.Println(t.S)
+}
+
+func describe(i I) {
+	fmt.Printf("(%v, %T)\n", i, i)
+}
+
+var i I
+
+i = &T{"Hello", "world"}
+
+describe(i) // prints (&{Hello world}, *main.T)
+
+```
 
 
 
