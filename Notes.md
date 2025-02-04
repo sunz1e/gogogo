@@ -41,7 +41,7 @@
 - Slice is a dynamic array. Like list in java. we can create slice of an array by defining it first	`primes := [6]int{2, 3, 5, 7, 11, 13}` then doing `primes[1:4]`
 - Slices are like references to arrays. Changing the elements of a slice modifies the corresponding elements of its underlying array.
 - defining a struct's slice with elements as well. 	
-```
+```GO
 s := []struct {
 		i int
 		b bool
@@ -57,7 +57,7 @@ s := []struct {
 - A slice has both a length and a capacity. length is the length of the view and capacity is the size of the array it is pointing to. 
 - Slice's low and high bound have default values. empty low means start and empty high means end. 
 - Slice shares the array internally and it doesn't create new data structure. It can be seen by following. Slice is just a view not the actual structure on memory.  
-```
+```GO
 func main() {
 	s := []int{2, 3, 5, 7, 11, 13}
 	printSlice(s)
@@ -81,7 +81,7 @@ func main() {
 - there is a `make` method. `make([]int, 0, 5)`. Initializes the array with 0. Keeps the initial length as specified and capacity. If only passes one, length and capacity are same.
 - if you try to slice a slice beyond its capacity it will throw error. 
 - 2 dimensional slice 
-```
+```GO
 
 	// Create a tic-tac-toe board.
 	board := [][]string{
@@ -106,7 +106,7 @@ func main() {
 - or you define and initialize like `map[string]string{ "key": "value"}` or if its a struct as value you could do it like this `map[string]myStruct{ "key": {1, "fieldOfMyStruct"} }` where our `struct` takes two fields of type int and string. 
 - Map operations: write `m[key] = elem`, read `elem = m[key]`, delete `delete(m, key)` reading with two value assignment `elem, ok := m[key]`
 - word count in go 
-```
+```GO
 
 func WordCount(s string) map[string]int {
 	ans := make(map[string]int)
@@ -126,14 +126,14 @@ func WordCount(s string) map[string]int {
 - Functions are values too. They can be passed around just like other values.
 - defining a function value ` fn func(float64, float64) float64`. defines a function which takes two float args and return one float. 
 - following defines a function which takes a function which takes two `float` args and return a `float`  
-```
+```GO
 func compute(fn func(float64, float64) float64) float64 {
 	return fn(3, 4)
 }
 
 ```
 - Go has closures. Closure is a function which access a variable from outside of its body. 
-```
+```GO
 func adder() func(int) int {
 	sum := 0
 	return func(x int) int {
@@ -143,7 +143,7 @@ func adder() func(int) int {
 }
 ```
 - fibonacci in go using closures 
-```
+```GO
 func fibonacci() func() int {
 	first, second := 0, 1
 	return func () int{
@@ -160,7 +160,7 @@ func fibonacci() func() int {
 - like this `v := Vertex{3, 4} and v.Abs()`
 - Methods are just functions with a receiver. you could write a function like `func Abs(v Vertex) float64` but then you would do `Abs(v)` not `v.Abs()`
 - You can declare a method on non-struct types, too. for example for a `float`. Notice that we first define a type of float and then we define a method on it. 
-```
+```GO
 type MyFloat float64
 
 func (f MyFloat) Abs() float64 {
@@ -179,14 +179,80 @@ func (f MyFloat) Abs() float64 {
 - ALL THE METHOD OF A GIVEN TYPE MUST BE EITHER POINTER RECEIVER OR VALUE NOT MIX. 
 - `type` keyword in go. `type` keyword creates a new type. Creating a type definition basically. you use it like `type nameOfMyType andStructureOfThisType`. You give name of the type and the underlying structure you want your type to have. Now, Your type can have anything as underlying structure. For example when you do `type MyFloat float64` you are basically keeping `float64` as the underlying structure. 
 - When you define a struct you basically define a custom type with struct as the underlying structure. 
-```
+```GO
 type Vertex struct {
   X int
   Y int
 }
 
 ```
-- 
+- `interface` type in go. `interface` means collection of methods. You can define interface types which couple of methods without body like following: 
+```GO
+type myInterface interface {
+	
+	method1() float64
+	method2() float64
+
+}
+
+```
+
+- implementing an `interface` in go. You don't write code to show that your `type` is implementing this interface like Java. So you can define your type and you won't have any idea which interface it implements. 
+- How do we connect the `interface` to my custom `type` which provides the implmentation of the methods? we do it by declaring a variable of our `interface` type and then we create a custom `type` which provides `method` with receivers where method names are same as the methods defined inside the `interface`. 
+- example: 
+```GO
+
+type MyFloat float64
+
+func (f MyFloat) method1() float64 {
+	......
+}
+
+func (f MyFloat) method2() float64 {
+	......
+}
+
+// here MyFloat implements both the methods of myInterface but there is no linking yet
+```
+- only when you will do the following
+```GO
+var a myInterface
+a = MyFloat(1.4444)
+``` 
+- you are basically linking a reference of type myInterface to the actual implementations. So if you switch the type on right hand side you will switch the implementations as well. 
+- IF YOUR CUSTOM TYPE DOESN'T IMPLEMENT ALL THE METHODS DEFINED IN INTERFACE YOU WILL GET ERROR DURING THIS ASSIGNMENT WHICH IS ACTUALLY LINKING THE INTERFACE AND THE IMPLEMENTATIONS. 
+- Linking assignment does a hard check on receiver. So if the required method implementation has pointer receiver but you are trying to link a value type to the `interface` var. you will get error. 
+```GO
+
+// if we have 
+type MyFloat float64
+
+func (f *MyFloat) method1() float64 {
+	......
+}
+
+
+// we can call 
+c := MyFloat(1.44)
+c.method1()
+// even though the method is defined for pointer receiver. 
+
+// but you cannot do this 
+
+var a myInterface 
+a = c
+
+// where 
+type myInterface interface {
+	
+	method1() float64
+}
+
+// because the method is defined for the pointer receiver. not the value type. 
+
+// this works 
+a = &c
+```
 
 
 
