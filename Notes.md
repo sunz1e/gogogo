@@ -281,7 +281,52 @@ i = &T{"Hello", "world"}
 describe(i) // prints (&{Hello world}, *main.T)
 
 ```
+- Different states of the variables of types an interface and a custom type. and their nil values
+```Go
+// you define interface
+type I interface {
+	M()
+}
 
+// you define custom type 
+type T struct {
+	S string
+}
+
+// and you link the type to interface by implementating the method 
+
+func (t *T) M() {
+	if t == nil {
+		fmt.Println("<nil>")
+		return
+	}
+	fmt.Println(t.S)
+}
+
+// when you only define a var which is of type interface
+	var i I
+// and you describe this 
+	describe(i)
+// prints (<nil>, <nil>)
+
+
+// when you only define a var which is of your custom type
+	var t *T
+// and you describe this 
+	describe(t)
+// prints (<nil>, *main.T) value is still nill
+
+
+// when you assign this to interface var and describe it also has value nill but now gets a type
+	i = t
+	describe(i)
+// prints (<nil>, *main.T) value is still nill
+
+i = &T{"hello"}
+describe(i)
+// prints (&{hello}, *main.T)
+
+```
 
 
 
