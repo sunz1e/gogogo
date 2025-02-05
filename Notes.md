@@ -281,7 +281,7 @@ i = &T{"Hello", "world"}
 describe(i) // prints (&{Hello world}, *main.T)
 
 ```
-- Different states of the variables of types an interface and a custom type. and their nil values
+- Interface values with nil underlying values
 ```Go
 // you define interface
 type I interface {
@@ -327,7 +327,88 @@ describe(i)
 // prints (&{hello}, *main.T)
 
 ```
+- calling interface methods on a nil interface value gives runtime exception because there is no implementation to execute. hence, we can say that no type inside the interface tuple to indicate which concrete method to call causes nil pointer dereference. 
+- types of variables in go once resolved are fixed. 
+```Go
 
+
+	j := 1
+	j = "" // this gives error " cannot use "" (untyped string constant) as int value in assignment"
+
+```
+- empty interface. Which doesn't have any methods. so it doesn't want any type to implement any method. So it can hold any type. 
+```Go
+var i interface{}
+
+	i = 42
+
+	i = "hello"
+// this holding of any value type is only possible with empty interface. 
+
+```
+- empty interface has underlying value of `(<nil>, <nil>)` since there is no type associated we cannot call the method but we can keep the values here. if we keep `42` it makes the underlying value to `(42, int)` and if we keep string it makes it `(hello, string)`. its like a generic container to hold values. 
+- Type assertions in go helps us to assert the type of a given var. basically like the `instance of` in java. 
+```Go
+t := i.(T)
+// asserts that the interface value i holds the concrete type T and assigns the underlying T value to the variable t.
+// it will trigger a panic. 
+
+
+//better way to do it. 
+t, ok := i.(T)
+// If it is not of type T, ok will be false and t will be the zero value of type T, and no panic occurs.
+
+```
+- you replace the specific type `T` with the keyword `type` and it returns the type of `i`. we can use this in a switch statement to handle conditions based on type 
+```GO
+switch v := i.(type) {
+	case int:
+		fmt.Printf("Twice %v is %v\n", v, v*2)
+	case string:
+		fmt.Printf("%q is %v bytes long\n", v, len(v))
+	default:
+		fmt.Printf("I don't know about type %T!\n", v)
+	}
+
+```
+- Error in go. `error` is a built in interface in go. which has single method called `Error()` which produces a string. 
+```go
+type error interface {
+    Error() string
+}
+```
+- Defining custom error. You define the type first, then implement the `Error()` for `error` interface. then you can have a method which returns your `error`
+```go
+
+// define the type for your the error
+type MyError struct {
+	When time.Time
+	What string
+}
+
+// implement the method Error() from the interface. 
+
+func (e *MyError) Error() string {
+	return fmt.Sprintf("at %v, %s",
+		e.When, e.What)
+}
+
+// now  you can return it. 
+
+func run() error {
+	return &MyError{
+		time.Now(),
+		"it didn't work",
+	}
+	
+}
+```
+- returning error with a value to the caller. 
+```go
+func Sqrt(x float64) (float64, error) {
+	return 0, nil
+}
+```
 
 
 
