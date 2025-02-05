@@ -371,6 +371,13 @@ switch v := i.(type) {
 	}
 
 ```
+- Stringer interface. most ubiquitous `interfaces` is `Stringer` defined by the `fmt` package. A `Stringer` is a `type` that can describe itself as a `string`. The `fmt` package (and many others) look for this `interface` to print values.
+```go
+type Stringer interface {
+    String() string
+}
+```
+
 - Error in go. `error` is a built in interface in go. which has single method called `Error()` which produces a string. 
 ```go
 type error interface {
@@ -408,7 +415,44 @@ func run() error {
 func Sqrt(x float64) (float64, error) {
 	return 0, nil
 }
+
+// here the function returns (float64, error)
 ```
+- As with `fmt.Stringer`, the `fmt` package looks for the `error` `interface` when printing values. due to this A call to `fmt.Sprint(e)` inside the Error method will send the program into an infinite loop. 
+- Example. Sqrt on negative number. 
+``` go 
+
+type ErrNegativeSqrt float64
+// we create a new float type which has error method implemented
+func (e ErrNegativeSqrt) Error() string{
+	return fmt.Sprint("cannot Sqrt negative number: ")+ fmt.Sprint(float64(e))
+}
+
+// our sqrt functions returns answer and error in case of a negative number
+func Sqrt(x float64) (float64, error) {
+	var nilF float64
+	if x < 0{
+		return nilF, ErrNegativeSqrt(x)
+	} // return nil float value and our custom float which has method Error means something bad happens. 
+	
+	i := 0;
+	z := 1.0;
+	for ;i < 10; i++ {
+		z -= (z*z - x) / (2*z)
+	}
+	return z, nil
+}
+
+func main() {
+	fmt.Println(Sqrt(2))
+	fmt.Println(Sqrt(-2))
+}
+// second call prints. 0 cannot Sqrt negative number: -2
+// because the println gets nilF which is 0 and since the return type of error is our custom float. 
+// the print method calls the `Error()` method which comes with it which returns the error statement and then it prints it. 
+
+```
+
 
 
 
