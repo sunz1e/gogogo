@@ -488,7 +488,57 @@ b[:n] = "!"
 n = 0 err = EOF b = [33 97 100 101 114 112 112 112]
 b[:n] = ""
 ```
+- custom reader 
+```go
 
+/**
+
+Exercise: rot13Reader
+A common pattern is an io.Reader that wraps another io.Reader, modifying the stream in some way.
+
+For example, the gzip.NewReader function takes an io.Reader (a stream of compressed data) and returns a *gzip.Reader that also implements io.Reader (a stream of the decompressed data).
+
+Implement a rot13Reader that implements io.Reader and reads from an io.Reader, modifying the stream by applying the rot13 substitution cipher to all alphabetical characters.
+
+The rot13Reader type is provided for you. Make it an io.Reader by implementing its Read method.
+*/
+package main
+
+import (
+	"io"
+	"os"
+	"strings"
+)
+
+type rot13Reader struct {
+	r io.Reader
+}
+
+func (r rot13Reader) Read(b []byte) (int, error) {
+	n, err := r.r.Read(b)
+	if err == nil {
+		for i := range b {
+			switch true {
+			case b[i] >= 97 && b[i] <= 109:
+				b[i] += 13
+			case b[i] > 109 && b[i] <= 122:
+				b[i] -= 13
+			case b[i] >= 65 && b[i] <= 77:
+				b[i] += 13
+			case b[i] > 77 && b[i] <= 90:
+				b[i] -= 13
+			}
+		}
+	}
+	return n, err
+}
+
+func main() {
+	s := strings.NewReader("Lbh penpxrq gur pbqr!")
+	r := rot13Reader{s}
+	io.Copy(os.Stdout, &r)
+}
+```
 
 
 
