@@ -452,6 +452,43 @@ func main() {
 // the print method calls the `Error()` method which comes with it which returns the error statement and then it prints it. 
 
 ```
+- `io` package specifies the `io.Reader` interface. many implementations of this interface, including files, network connections, compressors, ciphers, and others.
+```go
+
+func (T) Read(b []byte) (n int, err error)
+
+```
+- Read populates the given byte slice with data and returns the number of bytes populated and an error value. It returns an io.EOF error when the stream ends.
+
+- Example: Reading a string using reader. 
+```go
+func main() {
+	r := strings.NewReader("Hello, Readerppp!")
+
+	b := make([]byte, 8)
+	for {
+		n, err := r.Read(b)
+		fmt.Printf("n = %v err = %v b = %v\n", n, err, b)
+		fmt.Printf("b[:n] = %q\n", b[:n])
+		if err == io.EOF {
+			break
+		}
+	}
+}
+
+// prints the following
+```
+``` shell
+n = 8 err = <nil> b = [72 101 108 108 111 44 32 82]
+b[:n] = "Hello, R"
+n = 8 err = <nil> b = [101 97 100 101 114 112 112 112]
+b[:n] = "eaderppp"
+n = 1 err = <nil> b = [33 97 100 101 114 112 112 112]
+b[:n] = "!"
+n = 0 err = EOF b = [33 97 100 101 114 112 112 112]
+b[:n] = ""
+```
+
 
 
 
